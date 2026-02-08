@@ -1,0 +1,19 @@
+{
+  "id": "at-weather",
+  "name": "Weather",
+  "version": "1.0.0",
+  "minNoctaliaVersion": "4.2.0",
+  "author": "Alex Taras",
+  "license": "MIT",
+  "repository": "https://github.com/alex-taras/noctalia-plugins",
+  "description": "Weather Bar Widget using noctalia's built-in LocationService.",
+  "entryPoints": {
+    "barWidget": "WeatherWidget.qml"
+  },
+  "dependencies": {
+    "plugins": []
+  },
+  "metadata": {
+    "defaultSettings": {}
+  }
+}

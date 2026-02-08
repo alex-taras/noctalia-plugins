@@ -1,0 +1,34 @@
+{
+  "widget": {
+    "loading": "Lädt...",
+    "configure": "Bitte konfigurieren Sie Ihre Symbole"
+  },
+  "settings": {
+    "apiKey": {
+      "label": "Finnhub API-Schlüssel",
+      "description": "Ihr API-Schlüssel von finnhub.io",
+      "placeholder": "Geben Sie Ihren Finnhub API-Schlüssel ein"
+    },
+    "symbols": {
+      "label": "Aktiensymbole",
+      "description": "Kommagetrennte Liste von Aktiensymbolen ohne Leerzeichen (z.B. AAPL,TSLA,GOOG)",
+      "placeholder": "AAPL,TSLA,GOOG"
+    },
+    "width": {
+      "label": "Minimale Widget-Breite",
+      "description": "Mindestbreite des Widgets in Pixeln (Inhalt passt sich bis zu dieser Größe an)"
+    },
+    "autoscroll": {
+      "label": "Automatisches Scrollen",
+      "description": "Automatisch scrollen, wenn der Inhalt nicht passt"
+    },
+    "current": {
+      "label": "Aktuelle Einstellungen",
+      "symbols": "Symbole",
+      "width": "Breite",
+      "autoscroll": "Automatisches Scrollen",
+      "enabled": "Aktiviert",
+      "disabled": "Deaktiviert"
+    }
+  }
+}

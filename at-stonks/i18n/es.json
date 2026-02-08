@@ -1,0 +1,34 @@
+{
+  "widget": {
+    "loading": "Cargando...",
+    "configure": "Por favor configura tus símbolos"
+  },
+  "settings": {
+    "apiKey": {
+      "label": "Clave API de Finnhub",
+      "description": "Tu clave API de finnhub.io",
+      "placeholder": "Ingresa tu clave API de Finnhub"
+    },
+    "symbols": {
+      "label": "Símbolos de Acciones",
+      "description": "Lista de símbolos de acciones separados por comas sin espacios (ej: AAPL,TSLA,GOOG)",
+      "placeholder": "AAPL,TSLA,GOOG"
+    },
+    "width": {
+      "label": "Ancho Mínimo del Widget",
+      "description": "Ancho mínimo del widget en píxeles (el contenido se ajusta hasta este tamaño)"
+    },
+    "autoscroll": {
+      "label": "Desplazamiento Automático",
+      "description": "Desplazar automáticamente cuando el contenido no quepa"
+    },
+    "current": {
+      "label": "Configuración Actual",
+      "symbols": "Símbolos",
+      "width": "Ancho",
+      "autoscroll": "Desplazamiento Automático",
+      "enabled": "Activado",
+      "disabled": "Desactivado"
+    }
+  }
+}

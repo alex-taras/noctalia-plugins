@@ -1,0 +1,26 @@
+{
+  "id": "at-stonks",
+  "name": "Stocks Ticker",
+  "version": "1.0.0",
+  "minNoctaliaVersion": "4.2.5",
+  "author": "Alex Taras",
+  "license": "MIT",
+  "repository": "https://github.com/alextaras/noctalia-plugins",
+  "description": "A simple stocks ticker that uses finnhub api.",
+  "tags": ["Bar", "Stocks", "Finance"],
+  "entryPoints": {
+    "barWidget": "StonksBarWidget.qml",
+    "settings": "StonksSettings.qml"
+  },
+  "dependencies": {
+    "plugins": []
+  },
+  "metadata": {
+    "defaultSettings": {
+      "finnhubApiKey": "",
+      "symbols": ["AAPL", "TSLA", "GOOGL"],
+      "width": 300,
+      "autoscroll": true
+    }
+  }
+}

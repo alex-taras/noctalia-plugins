@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "plugins": [
+    {
+      "id": "at-sonarr",
+      "name": "Sonarr Upcoming Shows",
+      "version": "1.0.0",
+      "official": false,
+      "author": "Alex Taras (alex-taras)",
+      "description": "Bar widget to display todays and tomorrow upcoming show fro a local sonarr server.",
+      "repository": "https://github.com/alex-taras/noctalia-plugins",
+      "license": "MIT",
+      "tags": [
+        "Bar",
+        "Sonarr",
+        "Entertainment"
+      ],
+      "lastUpdated": "2026-02-08T23:08:01-07:00"
+    },
+    {
+      "id": "at-stonks",
+      "name": "Stock Ticker",
+      "version": "1.0.0",
+      "official": false,
+      "author": "Alex Taras (alex-taras)",
+      "description": "Bar widget to display a scrolling stocks ticker.",
+      "repository": "https://github.com/alex-taras/noctalia-plugins",
+      "license": "MIT",
+      "tags": [
+        "Bar",
+        "Stocks",
+        "Finance"
+      ],
+      "lastUpdated": "2026-02-08T23:08:01-07:00"
+    },
+    {
+      "id": "at-weather",
+      "name": "Weather and Location",
+      "version": "1.0.0",
+      "official": false,
+      "author": "Alex Taras (alex-taras)",
+      "description": "Bar widget to display current weather at location.",
+      "repository": "https://github.com/alex-taras/noctalia-plugins",
+      "license": "MIT",
+      "tags": [
+        "Bar",
+        "Weather"
+     ],
+      "lastUpdated": "2026-02-08T23:08:01-07:00"
+    }
+  ]
+}

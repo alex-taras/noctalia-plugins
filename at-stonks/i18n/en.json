@@ -1,0 +1,34 @@
+{
+  "widget": {
+    "loading": "Loading...",
+    "configure": "Please configure your symbols"
+  },
+  "settings": {
+    "apiKey": {
+      "label": "Finnhub API Key",
+      "description": "Your API key from finnhub.io",
+      "placeholder": "Enter your Finnhub API key"
+    },
+    "symbols": {
+      "label": "Stock Symbols",
+      "description": "Comma-separated list of stock symbols with no spaces (e.g., AAPL,TSLA,GOOG)",
+      "placeholder": "AAPL,TSLA,GOOG"
+    },
+    "width": {
+      "label": "Minimum Widget Width",
+      "description": "Minimum width of the widget in pixels (content hugs up to this size)"
+    },
+    "autoscroll": {
+      "label": "Auto-scroll",
+      "description": "Automatically scroll when content doesn't fit"
+    },
+    "current": {
+      "label": "Current Settings",
+      "symbols": "Symbols",
+      "width": "Width",
+      "autoscroll": "Auto-scroll",
+      "enabled": "Enabled",
+      "disabled": "Disabled"
+    }
+  }
+}

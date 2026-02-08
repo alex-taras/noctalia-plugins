@@ -1,0 +1,34 @@
+{
+  "widget": {
+    "loading": "Se încarcă...",
+    "configure": "Te rog configurează simbolurile"
+  },
+  "settings": {
+    "apiKey": {
+      "label": "Cheie API Finnhub",
+      "description": "Cheia ta API de la finnhub.io",
+      "placeholder": "Introdu cheia ta API Finnhub"
+    },
+    "symbols": {
+      "label": "Simboluri Acțiuni",
+      "description": "Lista de simboluri de acțiuni separate prin virgulă fără spații (ex: AAPL,TSLA,GOOG)",
+      "placeholder": "AAPL,TSLA,GOOG"
+    },
+    "width": {
+      "label": "Lățime Minimă Widget",
+      "description": "Lățimea minimă a widget-ului în pixeli (conținutul se ajustează până la această dimensiune)"
+    },
+    "autoscroll": {
+      "label": "Derulare Automată",
+      "description": "Derulare automată când conținutul nu încape"
+    },
+    "current": {
+      "label": "Setări Curente",
+      "symbols": "Simboluri",
+      "width": "Lățime",
+      "autoscroll": "Derulare Automată",
+      "enabled": "Activat",
+      "disabled": "Dezactivat"
+    }
+  }
+}

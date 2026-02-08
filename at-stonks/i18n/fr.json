@@ -1,0 +1,34 @@
+{
+  "widget": {
+    "loading": "Chargement...",
+    "configure": "Veuillez configurer vos symboles"
+  },
+  "settings": {
+    "apiKey": {
+      "label": "Clé API Finnhub",
+      "description": "Votre clé API de finnhub.io",
+      "placeholder": "Entrez votre clé API Finnhub"
+    },
+    "symbols": {
+      "label": "Symboles Boursiers",
+      "description": "Liste de symboles boursiers séparés par des virgules sans espaces (ex: AAPL,TSLA,GOOG)",
+      "placeholder": "AAPL,TSLA,GOOG"
+    },
+    "width": {
+      "label": "Largeur Minimale du Widget",
+      "description": "Largeur minimale du widget en pixels (le contenu s'adapte jusqu'à cette taille)"
+    },
+    "autoscroll": {
+      "label": "Défilement Automatique",
+      "description": "Défiler automatiquement lorsque le contenu ne rentre pas"
+    },
+    "current": {
+      "label": "Paramètres Actuels",
+      "symbols": "Symboles",
+      "width": "Largeur",
+      "autoscroll": "Défilement Automatique",
+      "enabled": "Activé",
+      "disabled": "Désactivé"
+    }
+  }
+}
