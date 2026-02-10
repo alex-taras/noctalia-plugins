@@ -1,7 +1,7 @@
 {
-  "finnhubApiKey": "d4qk6p1r01quli1d5un0d4qk6p1r01quli1d5ung",
+  "finnhubApiKey": "",
   "symbols": [
-    "GRMN"
+    "AAPL"
   ],
   "width": 450,
   "autoscroll": true

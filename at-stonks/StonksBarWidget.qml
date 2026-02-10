@@ -27,8 +27,8 @@ Item {
   property var i18n: ({})
   property string i18nBuffer: ""
 
-  readonly property color successColor: "#4ade80"  // green
-  readonly property color errorColor: Color.mError
+  readonly property color upColor: "#4ade80"  // green
+  readonly property color downColor: Color.mError
   readonly property color neutralColor: Color.mOnSurface
 
   readonly property real capsuleHeight: Style.getCapsuleHeightForScreen(screen?.name || "")
@@ -239,8 +239,8 @@ Item {
             property real change: parent.stock ? parent.stock.change : 0
             text: "$" + (parent.stock ? parent.stock.price : "")
             color: {
-              if (change > 0) return root.successColor
-              if (change < 0) return root.errorColor
+              if (change > 0) return root.upColor
+              if (change < 0) return root.downColor
               return root.neutralColor
             }
             pointSize: Style.fontSizeS
@@ -257,8 +257,8 @@ Item {
             property real change: parent.stock ? parent.stock.change : 0
             text: (change >= 0 ? "+" : "") + change.toFixed(2)
             color: {
-              if (change > 0) return root.successColor
-              if (change < 0) return root.errorColor
+              if (change > 0) return root.upColor
+              if (change < 0) return root.downColor
               return root.neutralColor
             }
             pointSize: Style.fontSizeS
@@ -327,8 +327,8 @@ Item {
             property real change: parent.stock ? parent.stock.change : 0
             text: "$" + (parent.stock ? parent.stock.price : "")
             color: {
-              if (change > 0) return root.successColor
-              if (change < 0) return root.errorColor
+              if (change > 0) return root.upColor
+              if (change < 0) return root.downColor
               return root.neutralColor
             }
             pointSize: Style.fontSizeS
@@ -344,8 +344,8 @@ Item {
             property real change: parent.stock ? parent.stock.change : 0
             text: (change >= 0 ? "+" : "") + change.toFixed(2)
             color: {
-              if (change > 0) return root.successColor
-              if (change < 0) return root.errorColor
+              if (change > 0) return root.upColor
+              if (change < 0) return root.downColor
               return root.neutralColor
             }
             pointSize: Style.fontSizeS
