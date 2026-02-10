@@ -15,7 +15,7 @@
         "Sonarr",
         "Entertainment"
       ],
-      "lastUpdated": "2026-02-08T23:08:01-07:00"
+      "lastUpdated": "2026-02-10T09:39:50+02:00"
     },
     {
       "id": "at-stonks",
@@ -31,7 +31,7 @@
         "Stocks",
         "Finance"
       ],
-      "lastUpdated": "2026-02-08T23:08:01-07:00"
+      "lastUpdated": "2026-02-10T09:39:50+02:00"
     },
     {
       "id": "at-weather",
@@ -46,7 +46,7 @@
         "Bar",
         "Weather"
      ],
-      "lastUpdated": "2026-02-08T23:08:01-07:00"
+      "lastUpdated": "2026-02-10T09:39:50+02:00"
     }
   ]
 }

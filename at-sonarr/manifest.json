@@ -1,11 +1,11 @@
 {
   "id": "at-sonarr",
   "name": "Sonarr Daily",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "minNoctaliaVersion": "4.2.5",
   "author": "Alex Taras",
   "license": "MIT",
-  "repository": "https://github.com/alextaras/noctalia-plugins",
+  "repository": "https://github.com/alex-taras/noctalia-plugins",
   "description": "Shows today's and tomorrow's Sonarr episodes in the bar.",
   "tags": ["Bar", "Sonarr", "Media"],
   "entryPoints": {
@@ -17,7 +17,7 @@
   },
   "metadata": {
     "defaultSettings": {
-      "sonarrHost": "192.168.1.137",
+      "sonarrHost": "192.168.0.1",
       "sonarrPort": "8989",
       "apiKey": ""
     }
