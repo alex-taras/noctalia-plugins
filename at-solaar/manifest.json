@@ -1,0 +1,20 @@
+{
+  "id": "at-solaar",
+  "name": "Solaar Devices",
+  "version": "1.0.0",
+  "minNoctaliaVersion": "4.2.5",
+  "author": "Alex Taras",
+  "license": "MIT",
+  "repository": "https://github.com/alex-taras/noctalia-plugins",
+  "description": "Shows Logitech device battery status via Solaar.",
+  "tags": ["Bar", "Battery", "Logitech", "Solaar"],
+  "entryPoints": {
+    "barWidget": "SolaarBarWidget.qml"
+  },
+  "dependencies": {
+    "plugins": []
+  },
+  "metadata": {
+    "defaultSettings": {}
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "id": "at-hypridle",
+  "name": "Hypridle Toggle",
+  "version": "1.0.0",
+  "minNoctaliaVersion": "4.2.0",
+  "author": "Alex Taras",
+  "license": "MIT",
+  "repository": "https://github.com/alex-taras/noctalia-plugins",
+  "description": "Bar button to toggle hypridle on/off.",
+  "tags": ["Bar", "Button", "Hypridle", "Utility"],
+  "entryPoints": {
+    "barWidget": "HypridleButton.qml"
+  },
+  "dependencies": {
+    "plugins": []
+  },
+  "metadata": {
+    "defaultSettings": {}
+  }
+}

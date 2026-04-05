@@ -2,6 +2,40 @@
   "version": 1,
   "plugins": [
     {
+      "id": "at-solaar",
+      "name": "Solaar Devices",
+      "version": "1.0.0",
+      "official": false,
+      "author": "Alex Taras (alex-taras)",
+      "description": "Bar widget to display Logitech device battery status via Solaar.",
+      "repository": "https://github.com/alex-taras/noctalia-plugins",
+      "license": "MIT",
+      "tags": [
+        "Bar",
+        "Battery",
+        "Logitech",
+        "Solaar"
+      ],
+      "lastUpdated": "2026-04-05T00:00:00+02:00"
+    },
+    {
+      "id": "at-hypridle",
+      "name": "Hypridle Toggle",
+      "version": "1.0.0",
+      "official": false,
+      "author": "Alex Taras (alex-taras)",
+      "description": "Bar button to toggle hypridle on/off.",
+      "repository": "https://github.com/alex-taras/noctalia-plugins",
+      "license": "MIT",
+      "tags": [
+        "Bar",
+        "Button",
+        "Hypridle",
+        "Utility"
+      ],
+      "lastUpdated": "2026-02-15T14:17:21+02:00"
+    },
+    {
       "id": "at-sonarr",
       "name": "Sonarr Upcoming Shows",
       "version": "1.0.1",
