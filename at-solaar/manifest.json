@@ -1,7 +1,7 @@
 {
   "id": "at-solaar",
   "name": "Solaar Devices",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "minNoctaliaVersion": "4.2.5",
   "author": "Alex Taras",
   "license": "MIT",

@@ -10,6 +10,8 @@ Singleton {
     property var data: null
     property bool loading: false
     property string dataBuffer: ""
+    property int retryCount: 0
+    readonly property int maxRetries: 10
 
     Process {
         id: dataFetcher
@@ -24,13 +26,29 @@ Singleton {
         onExited: () => {
             try {
                 const result = JSON.parse(dataBuffer)
-                data = result
                 dataBuffer = ""
-                loading = false
+                if (result.count === 0 && retryCount < maxRetries) {
+                    retryCount++
+                    retryTimer.start()
+                } else {
+                    data = result
+                    retryCount = 0
+                    loading = false
+                }
             } catch (e) {
                 Logger.e("Solaar", "Failed to parse data: " + e)
                 loading = false
             }
+        }
+    }
+
+    Timer {
+        id: retryTimer
+        interval: 3000
+        repeat: false
+        onTriggered: {
+            dataBuffer = ""
+            dataFetcher.running = true
         }
     }
 
