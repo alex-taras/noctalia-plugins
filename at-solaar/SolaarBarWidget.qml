@@ -75,12 +75,12 @@ Item {
 
             NText {
                 text: {
-                    if (Local.SolaarService.loading) return "󱊣  Loading..."
-                    if (!Local.SolaarService.data)   return "󱊣  No Devices"
+                    if (!Local.SolaarService.data)
+                        return Local.SolaarService.loading ? "󱊣  Loading..." : "󱊣  No Devices"
                     const count = Local.SolaarService.data.count || 0
                     return "󱊣  " + count + (count === 1 ? " Device" : " Devices")
                 }
-                color: Color.mOnSurface
+                color: Local.SolaarService.stale ? Color.mOnSurfaceVariant : Color.mOnSurface
                 pointSize: Style.fontSizeS
             }
         }

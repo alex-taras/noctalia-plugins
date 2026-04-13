@@ -4,7 +4,7 @@
     {
       "id": "at-solaar",
       "name": "Solaar Devices",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "official": false,
       "author": "Alex Taras (alex-taras)",
       "description": "Bar widget to display Logitech device battery status via Solaar.",

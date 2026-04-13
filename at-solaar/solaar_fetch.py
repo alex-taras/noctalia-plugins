@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-import subprocess, json, re
+import subprocess, json, re, os
+
+CACHE_FILE = os.path.expanduser("~/.cache/at-solaar.json")
 
 result = subprocess.run(["solaar", "show"], capture_output=True, text=True)
 devices = []
@@ -33,4 +35,11 @@ for d in devices:
     d["name"] = d.pop("codename") or d["name"]
 
 devices = [d for d in devices if d["battery"] is not None]
-print(json.dumps({"devices": devices, "count": len(devices)}))
+result = {"devices": devices, "count": len(devices)}
+
+if devices:
+    os.makedirs(os.path.dirname(CACHE_FILE), exist_ok=True)
+    with open(CACHE_FILE, "w") as f:
+        json.dump(result, f)
+
+print(json.dumps(result))
