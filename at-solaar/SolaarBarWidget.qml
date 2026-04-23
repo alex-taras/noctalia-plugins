@@ -49,11 +49,18 @@ Item {
         let lines = ""
         for (let i = 0; i < devices.length; i++) {
             const d = devices[i]
-            const color = batteryColor(d.battery)
             if (i > 0) lines += "<br>"
-            lines += deviceIcon(d.kind) + "  " + d.name
-                + "  " + batteryIcon(d.battery, d.status)
-                + " <span style='color:" + color + ";'>" + d.battery + "%</span>"
+            if (d.absent) {
+                lines += "<span style='color:#6b7280;'>"
+                    + deviceIcon(d.kind) + "  " + d.name
+                    + "  " + batteryIcon(d.battery, d.status)
+                    + " " + d.battery + "%</span>"
+            } else {
+                const color = batteryColor(d.battery)
+                lines += deviceIcon(d.kind) + "  " + d.name
+                    + "  " + batteryIcon(d.battery, d.status)
+                    + " <span style='color:" + color + ";'>" + d.battery + "%</span>"
+            }
         }
         return "<div style='text-align: left; font-size: 150%;'>" + lines + "</div>"
     }
