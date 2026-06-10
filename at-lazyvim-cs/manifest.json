@@ -1,7 +1,7 @@
 {
   "id": "at-lazyvim-cs",
   "name": "LazyVim Cheatsheet",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "minNoctaliaVersion": "3.6.0",
   "author": "Alex Taras",
   "license": "MIT",

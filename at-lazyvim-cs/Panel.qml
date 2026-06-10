@@ -304,6 +304,7 @@ Item {
 
               Loader {
                 Layout.fillWidth: true
+                Layout.preferredHeight: root.sectionHeightForBindCount((modelData.binds || []).length)
                 sourceComponent: sectionComponent
                 property var sectionData: modelData
               }
@@ -318,8 +319,8 @@ Item {
     id: sectionComponent
 
     Rectangle {
-      Layout.fillWidth: true
-      Layout.preferredHeight: root.sectionHeightForBindCount((sectionData.binds || []).length)
+      width: parent ? parent.width : 0
+      height: root.sectionHeightForBindCount((sectionData.binds || []).length)
       color: "transparent"
       radius: Style.radiusM
       border.width: 1
