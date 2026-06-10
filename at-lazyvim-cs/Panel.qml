@@ -46,6 +46,11 @@ Item {
   readonly property string descriptionColorOverride: cfg.descriptionTextColor ?? defaults.descriptionTextColor ?? ""
   readonly property color keyLabelColor: keyLabelColorOverride !== "" ? keyLabelColorOverride : Color.mOnPrimary
   readonly property color descriptionTextColor: descriptionColorOverride !== "" ? descriptionColorOverride : Color.mOnSurface
+  readonly property int rowHeight: 26
+  readonly property int sectionHeaderHeight: 30
+  readonly property int sectionPadding: 10
+  readonly property int sectionGap: 10
+  readonly property int headerHeight: 52
 
   anchors.fill: parent
 
@@ -53,44 +58,45 @@ Item {
     id: columnUpdateDebounce
     interval: 80
     repeat: false
-    onTriggered: updateColumnItemsNow()
+    onTriggered: updatePanelLayout()
   }
 
   Component.onCompleted: {
-    updateColumnItemsNow();
-    contentPreferredHeight = calculateDynamicHeight();
+    updatePanelLayout();
   }
 
   Component.onDestruction: columnUpdateDebounce.stop()
 
   onCategoriesChanged: {
     updateColumnItems();
-    contentPreferredHeight = calculateDynamicHeight();
   }
 
   onColumnCountChanged: {
     updateColumnItems();
-    contentPreferredHeight = calculateDynamicHeight();
   }
 
   onPanelOpenScreenChanged: {
-    contentPreferredHeight = calculateDynamicHeight();
+    updatePanelLayout();
     if (searchInput) searchInput.inputItem.forceActiveFocus();
   }
 
-  onMaxScreenHeightChanged: contentPreferredHeight = calculateDynamicHeight()
+  onPluginApiChanged: updatePanelLayout()
+  onMaxScreenHeightChanged: updatePanelLayout()
+  onSearchTextChanged: updatePanelLayout()
+  onModeFilterChanged: updatePanelLayout()
 
   function updateColumnItems() {
     columnUpdateDebounce.restart();
   }
 
-  function updateColumnItemsNow() {
+  function updatePanelLayout() {
     var assignments = distributeCategories();
     var items = [];
     for (var i = 0; i < columnCount; i++) {
       items.push(buildColumnItems(assignments[i] || []));
     }
     columnItems = items;
+    contentPreferredHeight = calculateDynamicHeightForColumns(items);
   }
 
   function categoryVisibleBindCount(cat) {
@@ -137,12 +143,40 @@ Item {
         if (!cat) continue;
         var visibleCount = categoryVisibleBindCount(cat);
         if (visibleCount === 0) continue;
-        colHeight += 28 + visibleCount * 24 + 8;
+        colHeight += sectionHeightForBindCount(visibleCount) + sectionGap;
       }
       if (colHeight > maxColumnHeight) maxColumnHeight = colHeight;
     }
 
-    return Math.max(340, Math.min(58 + maxColumnHeight + 34, maxScreenHeight));
+    return Math.max(340, Math.min(headerHeight + maxColumnHeight + 34, maxScreenHeight));
+  }
+
+  function calculateDynamicHeightForColumns(cols) {
+    if (!autoHeight && settingsHeight > 0) {
+      return Math.min(settingsHeight, maxScreenHeight);
+    }
+
+    if (!cols || cols.length === 0) return Math.min(360, maxScreenHeight);
+
+    var maxColumnHeight = 0;
+    for (var col = 0; col < cols.length; col++) {
+      var colHeight = 0;
+      var sections = cols[col] || [];
+      for (var i = 0; i < sections.length; i++) {
+        var binds = sections[i].binds || [];
+        colHeight += sectionHeightForBindCount(binds.length) + sectionGap;
+      }
+      if (colHeight > maxColumnHeight) maxColumnHeight = colHeight;
+    }
+
+    return Math.max(340, Math.min(headerHeight + maxColumnHeight + 36, maxScreenHeight));
+  }
+
+  function sectionHeightForBindCount(bindCount) {
+    return sectionHeaderHeight +
+           (bindCount * rowHeight) +
+           (Math.max(0, bindCount - 1) * 4) +
+           (sectionPadding * 2);
   }
 
   Rectangle {
@@ -157,7 +191,7 @@ Item {
       anchors.top: parent.top
       anchors.left: parent.left
       anchors.right: parent.right
-      height: 52
+      height: root.headerHeight
       color: Color.mSurfaceVariant
       radius: Style.radiusL
 
@@ -188,8 +222,6 @@ Item {
 
           onTextChanged: {
             root.searchText = text;
-            root.updateColumnItems();
-            root.contentPreferredHeight = root.calculateDynamicHeight();
           }
         }
 
@@ -223,8 +255,6 @@ Item {
               cursorShape: Qt.PointingHandCursor
               onClicked: {
                 root.modeFilter = modelData.mode;
-                root.updateColumnItems();
-                root.contentPreferredHeight = root.calculateDynamicHeight();
               }
             }
           }
@@ -265,7 +295,7 @@ Item {
           ColumnLayout {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignTop
-            spacing: 2
+            spacing: root.sectionGap
 
             property var colItems: root.columnItems[index] || []
 
@@ -274,9 +304,8 @@ Item {
 
               Loader {
                 Layout.fillWidth: true
-                sourceComponent: modelData.type === "header" ? headerComponent :
-                                 modelData.type === "spacer" ? spacerComponent : bindComponent
-                property var itemData: modelData
+                sourceComponent: sectionComponent
+                property var sectionData: modelData
               }
             }
           }
@@ -286,74 +315,81 @@ Item {
   }
 
   Component {
-    id: headerComponent
+    id: sectionComponent
 
-    NText {
+    Rectangle {
       Layout.fillWidth: true
-      Layout.topMargin: Style.marginM
-      Layout.bottomMargin: 4
-      text: itemData.title
-      font.pointSize: Style.fontSizeM
-      font.weight: Font.Bold
-      color: Color.mPrimary
-    }
-  }
+      Layout.preferredHeight: root.sectionHeightForBindCount((sectionData.binds || []).length)
+      color: "transparent"
+      radius: Style.radiusM
+      border.width: 1
+      border.color: Color.mOutline
 
-  Component {
-    id: spacerComponent
-
-    Item {
-      height: 8
-      Layout.fillWidth: true
-    }
-  }
-
-  Component {
-    id: bindComponent
-
-    RowLayout {
-      spacing: Style.marginS
-      height: 23
-      Layout.bottomMargin: 1
-
-      Flow {
-        Layout.preferredWidth: 185
-        Layout.alignment: Qt.AlignVCenter
-        spacing: 3
-
-        Repeater {
-          model: root.tokenizeKeys(itemData.keys)
-
-          Loader {
-            sourceComponent: modelData.separator ? keySeparatorComponent : keyBadgeComponent
-            property var tokenData: modelData
-          }
-        }
-      }
-
-      NText {
-        Layout.fillWidth: true
-        Layout.alignment: Qt.AlignVCenter
-        text: itemData.desc
-        font.pointSize: Style.fontSizeXS
-        color: root.descriptionTextColor
-        elide: Text.ElideRight
-      }
-
-      Rectangle {
-        Layout.preferredWidth: Math.max(26, modeText.implicitWidth + 12)
-        Layout.preferredHeight: 18
-        Layout.alignment: Qt.AlignVCenter
-        radius: 9
-        color: root.modeColor()
+      ColumnLayout {
+        id: sectionColumn
+        anchors.fill: parent
+        anchors.margins: root.sectionPadding
+        spacing: 4
 
         NText {
-          id: modeText
-          anchors.centerIn: parent
-          text: itemData.modes.toUpperCase()
-          font.pointSize: 7
+          Layout.fillWidth: true
+          Layout.preferredHeight: root.sectionHeaderHeight
+          text: sectionData.title
+          font.pointSize: Style.fontSizeM
           font.weight: Font.Bold
-          color: root.modeTextColor()
+          color: Color.mPrimary
+          elide: Text.ElideRight
+        }
+
+        Repeater {
+          model: sectionData.binds || []
+
+          RowLayout {
+            Layout.fillWidth: true
+            Layout.preferredHeight: root.rowHeight
+            spacing: Style.marginS
+
+            Flow {
+              Layout.preferredWidth: 185
+              Layout.alignment: Qt.AlignVCenter
+              spacing: 3
+
+              Repeater {
+                model: root.tokenizeKeys(modelData.keys)
+
+                Loader {
+                  sourceComponent: modelData.separator ? keySeparatorComponent : keyBadgeComponent
+                  property var tokenData: modelData
+                }
+              }
+            }
+
+            NText {
+              Layout.fillWidth: true
+              Layout.alignment: Qt.AlignVCenter
+              text: modelData.desc
+              font.pointSize: Style.fontSizeXS
+              color: root.descriptionTextColor
+              elide: Text.ElideRight
+            }
+
+            Rectangle {
+              Layout.preferredWidth: Math.max(26, modeText.implicitWidth + 12)
+              Layout.preferredHeight: 18
+              Layout.alignment: Qt.AlignVCenter
+              radius: 9
+              color: root.modeColor()
+
+              NText {
+                id: modeText
+                anchors.centerIn: parent
+                text: modelData.modes.toUpperCase()
+                font.pointSize: 7
+                font.weight: Font.Bold
+                color: root.modeTextColor()
+              }
+            }
+          }
         }
       }
     }
@@ -404,16 +440,7 @@ Item {
 
       if (binds.length === 0) continue;
 
-      result.push({ type: "header", title: cat.title });
-      for (var k = 0; k < binds.length; k++) {
-        result.push({
-          type: "bind",
-          keys: binds[k].keys,
-          desc: binds[k].desc,
-          modes: binds[k].modes || "n"
-        });
-      }
-      if (i < categoryIndices.length - 1) result.push({ type: "spacer" });
+      result.push({ title: cat.title, binds: binds });
     }
     return result;
   }
