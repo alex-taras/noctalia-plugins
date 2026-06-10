@@ -1,0 +1,20 @@
+{
+  "panel": {
+    "title": "LazyVim Cheatsheet",
+    "search-placeholder": "Search shortcuts..."
+  },
+  "settings": {
+    "title": "LazyVim Cheatsheet Settings",
+    "description": "Configure the LazyVim cheatsheet panel. Colors follow the active Noctalia theme unless an override is set in plugin settings.",
+    "layout": "Layout",
+    "width": "Width",
+    "height": "Height",
+    "auto-height": "Auto height",
+    "columns": "Columns"
+  },
+  "barwidget": {
+    "tooltip": "LazyVim Cheatsheet",
+    "open": "Open Cheatsheet",
+    "settings": "Plugin Settings"
+  }
+}

@@ -79,8 +79,26 @@
       "tags": [
         "Bar",
         "Weather"
-     ],
+      ],
       "lastUpdated": "2026-02-10T09:39:50+02:00"
+    },
+    {
+      "id": "at-lazyvim-cs",
+      "name": "LazyVim Cheatsheet",
+      "version": "1.0",
+      "official": false,
+      "author": "Alex Taras (alex-taras)",
+      "description": "Searchable LazyVim shortcut cheatsheet grouped by common editing workflow.",
+      "repository": "https://github.com/alex-taras/noctalia-plugins",
+      "license": "MIT",
+      "tags": [
+        "Bar",
+        "Panel",
+        "Neovim",
+        "LazyVim",
+        "Cheatsheet"
+      ],
+      "lastUpdated": "2026-06-10T00:00:00+03:00"
     }
   ]
 }

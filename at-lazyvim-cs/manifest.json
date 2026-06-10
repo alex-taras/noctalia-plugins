@@ -1,0 +1,43 @@
+{
+  "id": "at-lazyvim-cs",
+  "name": "LazyVim Cheatsheet",
+  "version": "1.0",
+  "minNoctaliaVersion": "3.6.0",
+  "author": "Alex Taras",
+  "license": "MIT",
+  "repository": "https://github.com/noctalia-dev/noctalia-plugins",
+  "description": "A searchable LazyVim shortcut cheatsheet grouped by common editing workflow.",
+  "tags": [
+    "Bar",
+    "Panel",
+    "Productivity",
+    "Neovim",
+    "LazyVim",
+    "Cheatsheet"
+  ],
+  "entryPoints": {
+    "main": "Main.qml",
+    "barWidget": "BarWidget.qml",
+    "panel": "Panel.qml",
+    "settings": "Settings.qml"
+  },
+  "dependencies": {
+    "plugins": []
+  },
+  "metadata": {
+    "defaultSettings": {
+      "windowWidth": 1280,
+      "windowHeight": 820,
+      "autoHeight": true,
+      "columnCount": 3,
+      "keyColorLeader": "",
+      "keyColorCtrl": "",
+      "keyColorShift": "",
+      "keyColorAlt": "",
+      "keyColorMode": "",
+      "keyColorDefault": "",
+      "keyLabelColor": "",
+      "descriptionTextColor": ""
+    }
+  }
+}
