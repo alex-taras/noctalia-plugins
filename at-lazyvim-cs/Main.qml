@@ -23,6 +23,45 @@ Item {
   function buildCheatsheetData() {
     return [
       {
+        "title": "EDITING",
+        "binds": [
+          bind("i / a", "Insert before / after", "n"),
+          bind("I / A", "Insert line start / end", "n"),
+          bind("o / O", "Open line below / above", "n"),
+          bind("Esc", "Escape and clear search", "i n s"),
+          bind("Ctrl + s", "Save file", "i x n s"),
+          bind("h/j/k/l", "Move cursor", "n x"),
+          bind("j / k", "Move by screen line", "n x"),
+          bind("w / b", "Next / previous word", "n x"),
+          bind("e / ge", "Next / previous word end", "n x"),
+          bind("0 / $", "Line start / end", "n x"),
+          bind("^ / g_", "First / last text", "n x"),
+          bind("gg / G", "File start / end", "n x"),
+          bind("dd", "Delete line", "n"),
+          bind("D", "Delete to line end", "n"),
+          bind("dw / db", "Delete word forward / back", "n"),
+          bind("x / X", "Delete char forward / back", "n"),
+          bind("cc", "Change line", "n"),
+          bind("cw / ciw", "Change word", "n"),
+          bind("r", "Replace char", "n"),
+          bind("J", "Join line below", "n"),
+          bind("yy", "Copy line", "n"),
+          bind("yw / yiw", "Copy word", "n"),
+          bind("p / P", "Paste after / before", "n"),
+          bind("u / Ctrl + r", "Undo / redo", "n"),
+          bind(".", "Repeat last change", "n"),
+          bind("f / F", "Find char forward / back", "n x"),
+          bind("%", "Matching pair", "n x"),
+          bind("* / #", "Search word forward / back", "n"),
+          bind("v / V", "Visual char / line", "n"),
+          bind("y / d / c", "Copy / delete / change selection", "x"),
+          bind("> / <", "Indent selection", "x"),
+          bind("g + c + o", "Add comment below", "n"),
+          bind("g + c + O", "Add comment above", "n"),
+          bind("Alt + j / Alt + k", "Move line / selection", "n i v")
+        ]
+      },
+      {
         "title": "WINDOW NAVIGATION",
         "binds": [
           bind("Ctrl + h/j/k/l", "Move between windows", "n"),
@@ -127,17 +166,6 @@ Item {
           bind("Space + q + l", "Restore last", "n"),
           bind("Space + q + d", "Skip session save", "n"),
           bind("Space + q + q", "Quit all", "n")
-        ]
-      },
-      {
-        "title": "EDITING",
-        "binds": [
-          bind("j / k", "Move by screen line", "n x"),
-          bind("Alt + j / Alt + k", "Move line / selection", "n i v"),
-          bind("Esc", "Escape and clear search", "i n s"),
-          bind("Ctrl + s", "Save file", "i x n s"),
-          bind("g + c + o", "Add comment below", "n"),
-          bind("g + c + O", "Add comment above", "n")
         ]
       },
       {
