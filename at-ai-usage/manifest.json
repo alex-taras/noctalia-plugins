@@ -1,0 +1,27 @@
+{
+  "id": "at-ai-usage",
+  "name": "AI Usage",
+  "version": "1.0.0",
+  "minNoctaliaVersion": "4.2.5",
+  "author": "Alex Taras",
+  "license": "MIT",
+  "repository": "https://github.com/alex-taras/noctalia-plugins",
+  "description": "Bar widget showing Claude subscription 5h/7-day rate-limit usage.",
+  "tags": ["Bar", "Claude", "Anthropic", "Usage"],
+  "entryPoints": {
+    "barWidget": "AiUsageBarWidget.qml",
+    "settings": "AiUsageSettings.qml"
+  },
+  "dependencies": {
+    "plugins": []
+  },
+  "metadata": {
+    "defaultSettings": {
+      "credentialsPath": "~/.claude/.credentials.json",
+      "refreshIntervalMinutes": 5,
+      "warnThreshold": 70,
+      "dangerThreshold": 90,
+      "showExtraUsage": true
+    }
+  }
+}

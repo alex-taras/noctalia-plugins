@@ -1,0 +1,31 @@
+{
+  "widget": {
+    "error": "AI usage unavailable",
+    "fiveHourLabel": "5h",
+    "sevenDayLabel": "7d",
+    "extraLabel": "credits"
+  },
+  "settings": {
+    "disclaimer": "Uses Claude Code's own OAuth session (from ~/.claude/.credentials.json) against an undocumented Anthropic endpoint. May break without notice.",
+    "credentialsPath": {
+      "label": "Credentials File Path",
+      "description": "Path to Claude Code's credentials.json"
+    },
+    "refreshInterval": {
+      "label": "Refresh Interval",
+      "description": "How often to poll usage, in minutes"
+    },
+    "warnThreshold": {
+      "label": "Warn Threshold",
+      "description": "Utilization % at which the widget turns yellow"
+    },
+    "dangerThreshold": {
+      "label": "Danger Threshold",
+      "description": "Utilization % at which the widget turns red"
+    },
+    "showExtraUsage": {
+      "label": "Show Pay-as-you-go Credits",
+      "description": "Also display extra usage credit utilization if enabled on your account"
+    }
+  }
+}
