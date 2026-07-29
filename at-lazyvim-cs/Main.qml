@@ -6,9 +6,11 @@ Item {
   property var pluginApi: null
   property int cheatsheetDataVersion: 0
   property var cheatsheetData: buildCheatsheetData()
+  property var compactData: buildCompactData()
 
   function refresh() {
     cheatsheetData = buildCheatsheetData();
+    compactData = buildCompactData();
     cheatsheetDataVersion++;
   }
 
@@ -18,6 +20,37 @@ Item {
       "desc": desc,
       "modes": modes || "n"
     };
+  }
+
+  // Minimal set shown by the desktop widget while collapsed:
+  // line/word motions, entering insert mode and moving between buffers.
+  function buildCompactData() {
+    return [
+      {
+        "title": "BASIC EDITING",
+        "binds": [
+          bind("h/j/k/l", "Move cursor", "n x"),
+          bind("w / b", "Next / previous word", "n x"),
+          bind("0 / $", "Line start / end", "n x"),
+          bind("gg / G", "File start / end", "n x"),
+          bind("i / a", "Insert before / after", "n"),
+          bind("o / O", "Open line below / above", "n"),
+          bind("dd / yy", "Delete / copy line", "n"),
+          bind("u / Ctrl + r", "Undo / redo", "n"),
+          bind("Esc", "Back to normal mode", "i n s"),
+          bind("Ctrl + s", "Save file", "i x n s")
+        ]
+      },
+      {
+        "title": "BUFFER NAVIGATION",
+        "binds": [
+          bind("Shift + h / Shift + l", "Prev / next buffer", "n"),
+          bind("Space + ,", "Buffer picker", "n"),
+          bind("Space + b + b", "Other buffer", "n"),
+          bind("Space + b + d", "Delete buffer", "n")
+        ]
+      }
+    ];
   }
 
   function buildCheatsheetData() {

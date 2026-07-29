@@ -1,7 +1,7 @@
 {
   "id": "at-lazyvim-cs",
   "name": "LazyVim Cheatsheet",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "minNoctaliaVersion": "3.6.0",
   "author": "Alex Taras",
   "license": "MIT",
@@ -10,6 +10,7 @@
   "tags": [
     "Bar",
     "Panel",
+    "DesktopWidget",
     "Productivity",
     "Neovim",
     "LazyVim",
@@ -18,6 +19,7 @@
   "entryPoints": {
     "main": "Main.qml",
     "barWidget": "BarWidget.qml",
+    "desktopWidget": "DesktopWidget.qml",
     "panel": "Panel.qml",
     "settings": "Settings.qml"
   },
@@ -25,6 +27,12 @@
     "plugins": []
   },
   "metadata": {
+    "showBackground": true,
+    "roundedCorners": true,
+    "collapsed": true,
+    "showModes": false,
+    "desktopWidth": 340,
+    "desktopMaxHeight": 560,
     "defaultSettings": {
       "windowWidth": 1280,
       "windowHeight": 820,

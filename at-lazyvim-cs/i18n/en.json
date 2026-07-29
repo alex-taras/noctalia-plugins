@@ -12,6 +12,11 @@
     "auto-height": "Auto height",
     "columns": "Columns"
   },
+  "desktopwidget": {
+    "title": "LazyVim",
+    "expand": "Show all shortcuts",
+    "collapse": "Show essentials only"
+  },
   "barwidget": {
     "tooltip": "LazyVim Cheatsheet",
     "open": "Open Cheatsheet",
