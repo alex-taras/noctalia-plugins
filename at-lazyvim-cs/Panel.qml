@@ -18,6 +18,10 @@ Item {
   property bool autoHeight: cfg.autoHeight ?? defaults.autoHeight ?? true
   property int columnCount: Math.max(1, Math.min(4, cfg.columnCount ?? defaults.columnCount ?? 3))
   property var panelOpenScreen: pluginApi?.panelOpenScreen
+  // Set when embedded outside the bar panel (desktop widget), where there is no
+  // panelOpenScreen to fall back on.
+  property var hostScreen: null
+  readonly property bool embedded: hostScreen !== null
   property real maxScreenHeight: panelOpenScreen ? panelOpenScreen.height * 0.9 : 800
 
   property string searchText: ""
@@ -46,6 +50,9 @@ Item {
   readonly property string descriptionColorOverride: cfg.descriptionTextColor ?? defaults.descriptionTextColor ?? ""
   readonly property color keyLabelColor: keyLabelColorOverride !== "" ? keyLabelColorOverride : Color.mOnPrimary
   readonly property color descriptionTextColor: descriptionColorOverride !== "" ? descriptionColorOverride : Color.mOnSurface
+  // Wide enough for the longest chord ("Shift + h / Shift + l") without wrapping,
+  // but no wider - the remainder goes to the description so it stops eliding.
+  readonly property int keyColumnWidth: 168
   readonly property int rowHeight: 26
   readonly property int sectionHeaderHeight: 30
   readonly property int sectionPadding: 10
@@ -263,11 +270,15 @@ Item {
         NIconButton {
           icon: "settings"
           onClicked: {
-            var screen = pluginApi?.panelOpenScreen;
-            if (screen && pluginApi?.manifest) {
-              pluginApi.closePanel(screen);
-              BarService.openPluginSettings(screen, pluginApi.manifest);
+            var screen = pluginApi?.panelOpenScreen || root.hostScreen;
+            if (!screen || !pluginApi?.manifest) {
+              return;
             }
+            // Only the bar panel needs closing - the embedded copy stays put.
+            if (pluginApi?.panelOpenScreen) {
+              pluginApi.closePanel(screen);
+            }
+            BarService.openPluginSettings(screen, pluginApi.manifest);
           }
         }
       }
@@ -280,8 +291,8 @@ Item {
       anchors.left: parent.left
       anchors.right: parent.right
       clip: true
-      leftPadding: 32
-      rightPadding: 18
+      leftPadding: 20
+      rightPadding: 14
       topPadding: 16
       bottomPadding: 16
 
@@ -348,10 +359,10 @@ Item {
           RowLayout {
             Layout.fillWidth: true
             Layout.preferredHeight: root.rowHeight
-            spacing: Style.marginS
+            spacing: Style.marginXXS
 
             Flow {
-              Layout.preferredWidth: 185
+              Layout.preferredWidth: root.keyColumnWidth
               Layout.alignment: Qt.AlignVCenter
               spacing: 3
 

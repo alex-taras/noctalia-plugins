@@ -16,9 +16,17 @@ DraggableDesktopWidget {
 
   // Persisted per-instance settings, falling back to the manifest metadata.
   readonly property bool collapsed: widgetData && widgetData.collapsed !== undefined ? widgetData.collapsed : (pluginMetadata.collapsed !== undefined ? pluginMetadata.collapsed : true)
-  readonly property int baseWidth: widgetData && widgetData.desktopWidth !== undefined ? widgetData.desktopWidth : (pluginMetadata.desktopWidth !== undefined ? pluginMetadata.desktopWidth : 340)
-  readonly property int maxExpandedHeight: widgetData && widgetData.desktopMaxHeight !== undefined ? widgetData.desktopMaxHeight : (pluginMetadata.desktopMaxHeight !== undefined ? pluginMetadata.desktopMaxHeight : 560)
+  readonly property int collapsedWidth: widgetData && widgetData.desktopWidth !== undefined ? widgetData.desktopWidth : (pluginMetadata.desktopWidth !== undefined ? pluginMetadata.desktopWidth : 380)
+  readonly property int collapsedMaxHeight: widgetData && widgetData.desktopMaxHeight !== undefined ? widgetData.desktopMaxHeight : (pluginMetadata.desktopMaxHeight !== undefined ? pluginMetadata.desktopMaxHeight : 560)
   readonly property bool showModes: widgetData && widgetData.showModes !== undefined ? widgetData.showModes : (pluginMetadata.showModes !== undefined ? pluginMetadata.showModes : false)
+
+  // Expanded matches the bar widget's panel: same width setting, and the height
+  // the panel computes for its own content. Clamped so it stays on screen.
+  readonly property int panelWidth: cfg.windowWidth ?? defaults.windowWidth ?? 1280
+  readonly property int maxExpandedWidth: screen ? Math.round(screen.width * 0.9) : 1280
+  readonly property int maxExpandedHeight: screen ? Math.round(screen.height * 0.9) : 820
+  readonly property int effectiveExpandedWidth: Math.min(panelWidth, maxExpandedWidth)
+  readonly property int effectiveExpandedHeight: Math.min(panelLoader.item ? panelLoader.item.contentPreferredHeight : 400, maxExpandedHeight)
 
   // Plugin-wide color overrides, shared with the panel.
   readonly property var cfg: pluginApi?.pluginSettings || ({})
@@ -36,30 +44,83 @@ DraggableDesktopWidget {
   property int _dataVersion: pluginApi?.mainInstance?.cheatsheetDataVersion ?? 0
   readonly property var sections: {
     var _v = _dataVersion;
-    var main = pluginApi?.mainInstance;
-    if (!main)
-      return [];
-    return (root.collapsed ? main.compactData : main.cheatsheetData) || [];
+    return pluginApi?.mainInstance?.compactData || [];
   }
 
   readonly property real pad: Math.round(Style.marginM * widgetScale)
   readonly property real headerHeight: Math.round(26 * widgetScale)
   readonly property real rowHeight: Math.round(20 * widgetScale)
-  readonly property real keyColumnWidth: Math.round(baseWidth * 0.46)
+  // Matches the panel's key column so the longest chord fits without wrapping.
+  readonly property real keyColumnWidth: 168
 
   defaultX: 60
   defaultY: 60
 
-  implicitWidth: Math.round(baseWidth * widgetScale)
-  implicitHeight: Math.round(Math.min(headerHeight + pad * 2 + Math.round(Style.marginS * widgetScale) + contentColumn.implicitHeight, maxExpandedHeight * widgetScale))
+  implicitWidth: Math.round((collapsed ? collapsedWidth : effectiveExpandedWidth) * widgetScale)
+  implicitHeight: {
+    if (!collapsed)
+      return Math.round(effectiveExpandedHeight * widgetScale);
+    var natural = headerHeight + pad * 2 + Math.round(Style.marginS * widgetScale) + collapsedColumn.implicitHeight;
+    return Math.round(Math.min(natural, collapsedMaxHeight * widgetScale));
+  }
   width: implicitWidth
   height: implicitHeight
 
   function toggleCollapsed() {
+    if (root.collapsed) {
+      // Expanding: remember where the strip sat, then center the wide panel.
+      // pendingCenter is persisted because updating the widget data rebuilds
+      // this item, so an in-memory flag would not survive the round trip.
+      root.updateWidgetData({
+                              "collapsed": false,
+                              "pendingCenter": true,
+                              "collapsedX": Math.round(root.x),
+                              "collapsedY": Math.round(root.y)
+                            });
+      return;
+    }
+
+    var props = {
+      "collapsed": true,
+      "pendingCenter": false
+    };
+    if (widgetData && widgetData.collapsedX !== undefined) {
+      props.x = widgetData.collapsedX;
+      props.y = widgetData.collapsedY;
+    }
+    root.updateWidgetData(props);
+  }
+
+  // Center the expanded panel once the panel has reported its final height.
+  function centerOnScreen() {
+    if (root.collapsed || !root.screen || !widgetData || !widgetData.pendingCenter) {
+      return;
+    }
+    if (root.width <= 0 || root.height <= 0) {
+      return;
+    }
     root.updateWidgetData({
-                            "collapsed": !root.collapsed
+                            "x": Math.round((root.screen.width - root.width) / 2),
+                            "y": Math.round((root.screen.height - root.height) / 2),
+                            "pendingCenter": false
                           });
   }
+
+  Timer {
+    id: centerDebounce
+    interval: 120
+    repeat: false
+    // Fires on creation too, which is when a freshly expanded instance appears.
+    running: !root.collapsed
+    onTriggered: root.centerOnScreen()
+  }
+
+  // Note: no Component.onCompleted here - DraggableDesktopWidget uses it to
+  // initialize widgetScale, and a handler in this file would replace it.
+  onHeightChanged: if (!root.collapsed)
+                     centerDebounce.restart()
+  onWidthChanged: if (!root.collapsed)
+                    centerDebounce.restart()
 
   function tokenizeKeys(keys) {
     var out = [];
@@ -102,12 +163,62 @@ DraggableDesktopWidget {
     return keyLabelColorOverride !== "" ? keyLabelColorOverride : Color.mOnSurface;
   }
 
+  // Expanded: reuse the bar panel, which already does multi-column layout,
+  // search and mode filtering. It fills the widget and draws its own surface.
+  Loader {
+    id: panelLoader
+    anchors.fill: parent
+    active: !root.collapsed
+    asynchronous: true
+    source: active ? "Panel.qml" : ""
+  }
+
+  Binding {
+    target: panelLoader.item
+    property: "pluginApi"
+    value: root.pluginApi
+    when: panelLoader.item !== null
+  }
+
+  // The panel derives these from the screen the bar opened it on, which is unset
+  // on the desktop - point them at the monitor the widget lives on instead, so
+  // its height clamp and its settings button both work here.
+  Binding {
+    target: panelLoader.item
+    property: "hostScreen"
+    value: root.screen
+    when: panelLoader.item !== null
+  }
+
+  Binding {
+    target: panelLoader.item
+    property: "maxScreenHeight"
+    value: root.maxExpandedHeight
+    when: panelLoader.item !== null && root.screen !== null
+  }
+
+  // Collapse control for the expanded state, pinned clear of the panel's own
+  // header controls at the bottom-right corner.
+  NIconButton {
+    visible: !root.collapsed && panelLoader.status === Loader.Ready
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    anchors.margins: Math.round(Style.marginS * root.widgetScale)
+    baseSize: Math.round(Style.baseWidgetSize * 0.8 * root.widgetScale)
+    icon: "chevron-up"
+    tooltipText: root.pluginApi?.tr("desktopwidget.collapse") || "Show essentials only"
+    z: 10
+    onClicked: root.toggleCollapsed()
+  }
+
+  // Collapsed: the curated essentials, rendered compactly.
   ColumnLayout {
     anchors.fill: parent
     anchors.margins: root.pad
     spacing: Math.round(Style.marginS * root.widgetScale)
+    visible: root.collapsed
 
-    // Header - click anywhere on it to collapse or expand
+    // Header - click anywhere on it to expand
     Item {
       id: header
       Layout.fillWidth: true
@@ -133,7 +244,7 @@ DraggableDesktopWidget {
         }
 
         NIcon {
-          icon: root.collapsed ? "chevron-down" : "chevron-up"
+          icon: "chevron-down"
           pointSize: Style.fontSizeM * root.widgetScale
           color: headerMouse.containsMouse ? Color.mPrimary : Color.mOnSurfaceVariant
         }
@@ -157,11 +268,11 @@ DraggableDesktopWidget {
       clip: true
       interactive: contentHeight > height
       contentWidth: width
-      contentHeight: contentColumn.implicitHeight
+      contentHeight: collapsedColumn.implicitHeight
       boundsBehavior: Flickable.StopAtBounds
 
       ColumnLayout {
-        id: contentColumn
+        id: collapsedColumn
         width: flick.width
         spacing: Math.round(Style.marginS * root.widgetScale)
 
@@ -190,7 +301,7 @@ DraggableDesktopWidget {
                 required property var modelData
                 Layout.fillWidth: true
                 Layout.preferredHeight: root.rowHeight
-                spacing: Math.round(Style.marginXS * root.widgetScale)
+                spacing: Math.round(Style.marginXXS * root.widgetScale)
 
                 Flow {
                   Layout.preferredWidth: Math.round(root.keyColumnWidth * root.widgetScale)
