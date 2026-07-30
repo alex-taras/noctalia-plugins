@@ -22,11 +22,15 @@ DraggableDesktopWidget {
 
   // Expanded matches the bar widget's panel: same width setting, and the height
   // the panel computes for its own content. Clamped so it stays on screen.
-  readonly property int panelWidth: cfg.windowWidth ?? defaults.windowWidth ?? 1280
-  readonly property int maxExpandedWidth: screen ? Math.round(screen.width * 0.9) : 1280
-  readonly property int maxExpandedHeight: screen ? Math.round(screen.height * 0.9) : 820
-  readonly property int effectiveExpandedWidth: Math.min(panelWidth, maxExpandedWidth)
-  readonly property int effectiveExpandedHeight: Math.min(panelLoader.item ? panelLoader.item.contentPreferredHeight : 400, maxExpandedHeight)
+  readonly property int panelWidth: (cfg.windowWidth > 0 ? cfg.windowWidth : (defaults.windowWidth > 0 ? defaults.windowWidth : 1280))
+  // Clamps are expressed in unscaled units so they survive widgetScale: the final
+  // on-screen size is (value * widgetScale), so divide the screen budget by the
+  // scale before comparing. Without this a scaled-up widget overflows the monitor.
+  readonly property real sizeBudget: widgetScale > 0 ? widgetScale : 1
+  readonly property int maxExpandedWidth: screen ? Math.round(screen.width * 0.94 / sizeBudget) : 1280
+  readonly property int maxExpandedHeight: screen ? Math.round(screen.height * 0.94 / sizeBudget) : 820
+  readonly property int effectiveExpandedWidth: Math.max(320, Math.min(panelWidth, maxExpandedWidth))
+  readonly property int effectiveExpandedHeight: Math.max(240, Math.min(panelLoader.item ? panelLoader.item.contentPreferredHeight : 400, maxExpandedHeight))
 
   // Plugin-wide color overrides, shared with the panel.
   readonly property var cfg: pluginApi?.pluginSettings || ({})
@@ -56,12 +60,12 @@ DraggableDesktopWidget {
   defaultX: 60
   defaultY: 60
 
-  implicitWidth: Math.round((collapsed ? collapsedWidth : effectiveExpandedWidth) * widgetScale)
+  implicitWidth: Math.round(Math.min(collapsed ? collapsedWidth : effectiveExpandedWidth, maxExpandedWidth) * widgetScale)
   implicitHeight: {
     if (!collapsed)
       return Math.round(effectiveExpandedHeight * widgetScale);
     var natural = headerHeight + pad * 2 + Math.round(Style.marginS * widgetScale) + collapsedColumn.implicitHeight;
-    return Math.round(Math.min(natural, collapsedMaxHeight * widgetScale));
+    return Math.round(Math.min(natural, collapsedMaxHeight * widgetScale, maxExpandedHeight * widgetScale));
   }
   width: implicitWidth
   height: implicitHeight
@@ -91,17 +95,28 @@ DraggableDesktopWidget {
     root.updateWidgetData(props);
   }
 
-  // Center the expanded panel once the panel has reported its final height.
+  // Re-center the expanded panel whenever its size settles - on expand, and again
+  // after the width/height settings change.
   function centerOnScreen() {
-    if (root.collapsed || !root.screen || !widgetData || !widgetData.pendingCenter) {
+    if (root.collapsed || !root.screen || !widgetData) {
       return;
     }
     if (root.width <= 0 || root.height <= 0) {
       return;
     }
+
+    var targetX = Math.max(0, Math.round((root.screen.width - root.width) / 2));
+    var targetY = Math.max(0, Math.round((root.screen.height - root.height) / 2));
+
+    // Writing widget data rebuilds this item and re-runs the timer, so bail out
+    // once we are already centered - otherwise the rebuild loops forever.
+    if (widgetData.x === targetX && widgetData.y === targetY && !widgetData.pendingCenter) {
+      return;
+    }
+
     root.updateWidgetData({
-                            "x": Math.round((root.screen.width - root.width) / 2),
-                            "y": Math.round((root.screen.height - root.height) / 2),
+                            "x": targetX,
+                            "y": targetY,
                             "pendingCenter": false
                           });
   }
@@ -114,6 +129,13 @@ DraggableDesktopWidget {
     running: !root.collapsed
     onTriggered: root.centerOnScreen()
   }
+
+  // A settings change resizes the embedded panel without recreating the widget,
+  // so watch the resolved size directly rather than relying on expand alone.
+  onEffectiveExpandedWidthChanged: if (!root.collapsed)
+                                     centerDebounce.restart()
+  onEffectiveExpandedHeightChanged: if (!root.collapsed)
+                                      centerDebounce.restart()
 
   // Note: no Component.onCompleted here - DraggableDesktopWidget uses it to
   // initialize widgetScale, and a handler in this file would replace it.

@@ -13,8 +13,8 @@ Item {
   property var cfg: pluginApi?.pluginSettings || ({})
   property var defaults: pluginApi?.manifest?.metadata?.defaultSettings || ({})
 
-  property int settingsWidth: cfg.windowWidth ?? defaults.windowWidth ?? 1280
-  property int settingsHeight: cfg.windowHeight ?? defaults.windowHeight ?? 820
+  property int settingsWidth: (cfg.windowWidth > 0 ? cfg.windowWidth : (defaults.windowWidth > 0 ? defaults.windowWidth : 1280))
+  property int settingsHeight: (cfg.windowHeight > 0 ? cfg.windowHeight : (defaults.windowHeight > 0 ? defaults.windowHeight : 820))
   property bool autoHeight: cfg.autoHeight ?? defaults.autoHeight ?? true
   property int columnCount: Math.max(1, Math.min(4, cfg.columnCount ?? defaults.columnCount ?? 3))
   property var panelOpenScreen: pluginApi?.panelOpenScreen

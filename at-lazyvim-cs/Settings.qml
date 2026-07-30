@@ -53,63 +53,47 @@ ColumnLayout {
         color: Color.mOnSurface
       }
 
-      RowLayout {
+      // One control per row: NSpinBox and NToggle each carry their own label and
+      // already set Layout.fillWidth, so packing several into one row starves them.
+      NSpinBox {
         Layout.fillWidth: true
-        spacing: Style.marginM
+        label: pluginApi?.tr("settings.width") || "Width"
+        from: 600
+        to: 2200
+        stepSize: 20
+        suffix: "px"
+        value: root.editWindowWidth
+        onValueChanged: root.editWindowWidth = value
+      }
 
-        NText {
-          text: pluginApi?.tr("settings.width") || "Width"
-          color: Color.mOnSurface
-        }
-
-        NSpinBox {
-          from: 600
-          to: 2200
-          stepSize: 20
-          value: root.editWindowWidth
-          onValueChanged: root.editWindowWidth = value
-        }
-
-        NText {
-          text: pluginApi?.tr("settings.height") || "Height"
-          color: Color.mOnSurface
-        }
-
-        NSpinBox {
-          from: 300
-          to: 1600
-          stepSize: 20
-          value: root.editWindowHeight
-          enabled: !root.editAutoHeight
-          onValueChanged: root.editWindowHeight = value
-        }
-
-        NToggle {
-          checked: root.editAutoHeight
-          label: pluginApi?.tr("settings.auto-height") || "Auto height"
-          onToggled: function(checked) {
-            root.editAutoHeight = checked;
-          }
+      NToggle {
+        Layout.fillWidth: true
+        checked: root.editAutoHeight
+        label: pluginApi?.tr("settings.auto-height") || "Auto height"
+        onToggled: function (checked) {
+          root.editAutoHeight = checked;
         }
       }
 
-      RowLayout {
+      NSpinBox {
         Layout.fillWidth: true
-        spacing: Style.marginM
+        label: pluginApi?.tr("settings.height") || "Height"
+        from: 300
+        to: 1600
+        stepSize: 20
+        suffix: "px"
+        value: root.editWindowHeight
+        enabled: !root.editAutoHeight
+        onValueChanged: root.editWindowHeight = value
+      }
 
-        NText {
-          text: pluginApi?.tr("settings.columns") || "Columns"
-          color: Color.mOnSurface
-        }
-
-        NSpinBox {
-          from: 1
-          to: 4
-          value: root.editColumnCount
-          onValueChanged: root.editColumnCount = value
-        }
-
-        Item { Layout.fillWidth: true }
+      NSpinBox {
+        Layout.fillWidth: true
+        label: pluginApi?.tr("settings.columns") || "Columns"
+        from: 1
+        to: 4
+        value: root.editColumnCount
+        onValueChanged: root.editColumnCount = value
       }
     }
   }
@@ -118,10 +102,12 @@ ColumnLayout {
 
   function saveSettings() {
     if (!pluginApi) return;
-    pluginApi.pluginSettings.windowWidth = root.editWindowWidth;
-    pluginApi.pluginSettings.windowHeight = root.editWindowHeight;
+    // Clamp rather than trust the edit values: a spinbox that is bound before
+    // pluginApi resolves can report its own 0 default and poison the settings.
+    pluginApi.pluginSettings.windowWidth = Math.max(600, Math.min(2200, root.editWindowWidth || 1280));
+    pluginApi.pluginSettings.windowHeight = Math.max(300, Math.min(1600, root.editWindowHeight || 820));
     pluginApi.pluginSettings.autoHeight = root.editAutoHeight;
-    pluginApi.pluginSettings.columnCount = root.editColumnCount;
+    pluginApi.pluginSettings.columnCount = Math.max(1, Math.min(4, root.editColumnCount || 3));
     pluginApi.saveSettings();
     pluginApi.mainInstance?.refresh();
   }
