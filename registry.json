@@ -85,7 +85,7 @@
     {
       "id": "at-lazyvim-cs",
       "name": "LazyVim Cheatsheet",
-      "version": "1.2.1",
+      "version": "1.2.2",
       "official": false,
       "author": "Alex Taras (alex-taras)",
       "description": "Searchable LazyVim shortcut cheatsheet grouped by common editing workflow.",
@@ -99,7 +99,7 @@
         "LazyVim",
         "Cheatsheet"
       ],
-      "lastUpdated": "2026-07-30T00:00:00+03:00"
+      "lastUpdated": "2026-08-07T00:00:00+03:00"
     },
     {
       "id": "at-ai-usage",

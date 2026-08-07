@@ -510,12 +510,51 @@ Item {
     return out;
   }
 
+  // Relative luminance, WCAG 2.x. QML color channels are already sRGB in 0..1.
+  function relativeLuminance(c) {
+    function linear(v) {
+      return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+    }
+    return 0.2126 * linear(c.r) + 0.7152 * linear(c.g) + 0.0722 * linear(c.b);
+  }
+
+  function contrastRatio(a, b) {
+    var la = relativeLuminance(a);
+    var lb = relativeLuminance(b);
+    return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+  }
+
+  // Every pill background is a theme role, so the label is just that role's
+  // on-color - mTertiary gets mOnTertiary, not whatever mOnSurface happens to be.
+  // The one case with no paired on-color is a user background override, and there
+  // we pick the theme on-color that measures best against it.
+  function readableTextColor(background, paired) {
+    if (paired !== undefined) {
+      return paired;
+    }
+
+    var candidates = [Color.mOnSurface, Color.mOnSurfaceVariant, Color.mSurface, Color.mOnPrimary, Color.mOnSecondary, Color.mOnTertiary];
+    var best = candidates[0];
+    var bestRatio = 0;
+    for (var i = 0; i < candidates.length; i++) {
+      var ratio = contrastRatio(background, candidates[i]);
+      if (ratio > bestRatio) {
+        bestRatio = ratio;
+        best = candidates[i];
+      }
+    }
+    return best;
+  }
+
   function modeColor() {
     return keyColorModeOverride !== "" ? keyColorModeOverride : Color.mTertiary;
   }
 
   function modeTextColor() {
-    return keyLabelColorOverride !== "" ? keyLabelColorOverride : Color.mOnSurface;
+    if (keyLabelColorOverride !== "") return keyLabelColorOverride;
+    // The mode pill only carries the theme's own on-color when its background is
+    // still mTertiary; a custom keyColorMode has no on-color to pair with.
+    return readableTextColor(modeColor(), keyColorModeOverride !== "" ? undefined : Color.mOnTertiary);
   }
 
   function getKeyColor(keyName) {
@@ -527,9 +566,19 @@ Item {
     return keyColorDefaultOverride !== "" ? keyColorDefaultOverride : Color.mSurfaceVariant;
   }
 
+  // The on-color that goes with this key's default background, or undefined when
+  // the user has overridden the background and no paired on-color exists.
+  function getKeyOnColor(keyName) {
+    if (keyName === "Space") return keyColorLeaderOverride !== "" ? undefined : Color.mOnPrimary;
+    if (keyName === "Ctrl") return keyColorCtrlOverride !== "" ? undefined : Color.mOnSecondary;
+    if (keyName === "Shift") return keyColorShiftOverride !== "" ? undefined : Color.mOnTertiary;
+    if (keyName === "Alt") return keyColorAltOverride !== "" ? undefined : Color.mOnTertiary;
+    if (keyName === "Esc" || keyName === "Tab") return Color.mOnSurfaceVariant;
+    return keyColorDefaultOverride !== "" ? undefined : Color.mOnSurfaceVariant;
+  }
+
   function getKeyTextColor(keyName) {
-    if (keyName === "Space") return keyLabelColorOverride !== "" ? keyLabelColorOverride : Color.mOnPrimary;
-    if (keyName === "Ctrl" || keyName === "Shift" || keyName === "Alt") return keyLabelColorOverride !== "" ? keyLabelColorOverride : Color.mOnSurface;
-    return keyLabelColorOverride !== "" ? keyLabelColorOverride : Color.mOnSurface;
+    if (keyLabelColorOverride !== "") return keyLabelColorOverride;
+    return readableTextColor(getKeyColor(keyName), getKeyOnColor(keyName));
   }
 }
